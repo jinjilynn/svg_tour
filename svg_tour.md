@@ -6,11 +6,11 @@
 
 - ## 栅格图形
 
-  图形是由单个像素拼凑而成,存在形式为jpg、png等二进制文件
+  图形是由单个像素拼凑而成,存在形式为jpg、png等二进制文件,可以进行修改但本身不具有编程性
 
 - ## 矢量图形
 
-  图形被描述为一系列的指令,以XML文件形式存在
+  图形被描述为一系列的指令,以XML文件形式存在,具有可编程性
 
 # SVG文档结构
 
@@ -75,7 +75,7 @@ svg画布无限大,视口就是svg文件的固有尺寸大小,也就是svg的可
 
 坐标系变换可以应用到父元素以使所有子元素使用到的坐标系都跟着变换,也可以单独应用到某个子元素只使它自己的坐标系变换.不论哪种变换最终影响到的都是绘图指令所使用的点的坐标.
 
-所有的变换类型都写在元素的transform属性中
+所有的变换类型都写在元素的transform属性中,不能写在style属性中
 
 #### 变换类型
 
@@ -220,3 +220,207 @@ height-value是截取矩形的高度
 就是将图像完全平铺在viewport中,因为比例不同所以会产生变形.
 
 语法: preserveAspectRatio="none"
+
+## 常用指令
+
+有了坐标系之后就可以开始图形的绘制工作了,在svg中绘制图形遵循的原则是表现与形状分离,所以样式指令在不同的形状中基本上是通用的.就像HTML与CSS一样,SVG中的形状指令是以元素标签的形式存在的,而样式指令则会作为元素标签属性的一部分以字符的形式存在.与HTML不同的是,SVG标签的绘制需要有精准坐的标定位,所以具有极强的可编程性.
+
+### 形状指令
+
+#### line
+
+- \<line x1="x-value" y1="y-value" x2="x2-value" y2="y2-value" /\>
+
+  line标签指令是画一条单一的线段路径,它特有的属性x1、y1、x2、y2份别值直线的起点和终点坐标
+
+  value值可以有单位也可以没有单位
+
+#### rect
+
+- \<rect x="x-value" y="y-value" rx="rx-value" ry="ry-value" width="w-value" height="h-value" \>
+
+  rect标签指令是画一条矩形路径,它特有的属性是x、y、width、height、rx、ry,其中x、y表示矩形左上角的顶点坐标;width、height表示矩形的长度和宽度;rx、ry表示在x方向和y方向上的圆角半径,最大不能超过各个方向上的一半,和css的border-radius样式不同,rx和ry代表了四个角的圆角半径,不能单独设置每个角的圆角半径,这两个是可选填参数,不是必须的.
+
+  value值可以有单位也可以没有单位
+
+#### circle
+
+- \<circle cx="x-value" cy="y-value" r="r-value" \>
+
+  circle标签指令是画一条圆弧路径,它特有的属性是cx、cy和r,可能是为了使属性名更具语义化所以为圆心坐标起了个cx和cy的名称,r自然就是半径
+
+  value值可以有单位也可以没有单位
+
+#### ellipse
+
+- \<ellipse cx="x-value" cy="y-value" rx="rx-value" ry="ry-value" \>
+
+  ellipse标签指令是画一条椭圆路径cx、cy表示椭圆的圆心坐标,,rx、ry表示在x方向和y方向上的椭圆半径.
+
+  这个椭圆路径是完全可以使用rect路径画出来的,ellipse只是看起来更语义化一点
+
+  value值可以有单位也可以没有单位
+
+#### polyline
+
+- \<polyline points="points-list" \>
+
+  polyline标签指令表示一条连续的多条线段组成的路径,points是一系列的坐标对,坐标对与坐标对之间可以使用空格或逗号分隔,坐标对内的坐标值之间也可以使用空格或逗号分隔,总之可以随意分隔,但没有规律的分隔可读性就会非常差
+
+#### polygon
+
+- \<polygon points="points-list" \>
+
+  polygon标签指令也表示一条连续的多条线段组成的路径,但是和polyline有一点区别就是起始点和终点也会连接上线段,而polyline就不会连接起点和终点坐标.
+
+### 结构指令
+
+结构指令与形状指令不同,它不会产生形状路径,对页面的视觉表现没有直接的影响,只是起到分组、复用等作用,使svg文档结构更具合理性.
+
+#### g
+
+g是group的缩写,可以在逻辑上使所有的子元素作为一组,同时为g标签定义的样式都是被所有子元素继承
+
+#### use
+
+use标签提供了复制粘贴使用元素的功能,被复制的元素可以是任何页面里出现的元素
+
+```xml
+<use xlink:href="" x="" y="" style="" width="" height="" ... />
+```
+
+xlink:href里定义任何可以定位到某个元素的url,虽然可能会因为同源策略被限制,因浏览器而已,一般指定一个id即可.
+
+由于被复制的元素也是使用坐标点严格绘制出来的,所以这里的x、y所起到的作用就相当于为被复制元素应用translate坐标变换.
+
+同时可以定义其他属性,比如style、width、height等,同样style里的样式会被复制元素继承. 
+
+#### defs
+
+在defs中定义的标签不会在页面中显示,可以用来定义后续需要被复用的标签或内部样式表style标签.
+
+#### symbol
+
+symbol和g标签一样都可以起到分组的作用,但是在symbol中的元素是永远不会显示出来的,这和定义在defs中的元素一样,都是供后续复用使用的元素.而在复用的时候和g标签又是有区别的,symbol可以定义viewBox和preserveAspectRatio,这样就会适配use表签定义的width和height属性.
+
+#### image
+
+image标签相当于建立起了一个视口,这个视口是基于定义的x、y、width、height属性来建立,可以为通过xlink:href属性引用外部完整的svg或栅格图片文件.
+
+如果引入的图像文件宽高和image标签定义的宽高不匹配,则可以定义preserveAspectRatio属性来指定缩放.
+
+```xml
+<image x="" y ="" width="" height="" xlink:href="" preserveAspectRatio="" />
+```
+
+
+
+### 样式指令
+
+以上标签指令是svg中最基本和常用的几个形状标签,如果这些形状标签没有默认的有色样式,就会发现它们和HTML中的div一样,在页面上看不到任何东西,仅仅是有一些看不见的形状路径.要使用路径可以被视觉捕捉,就需要为路径添加颜色等样式.在svg中为路径添加样式有四种做法:
+
+- 内联样式
+- 内部样式表
+- 外部样式表
+- 样式属性
+
+#### 内联样式
+
+在style属性中书写样式
+
+#### 内部样式表
+
+在defs标签内部定义style标签
+
+```xml
+<defs>
+  <style type="text/css">
+    <![CDATA[
+			circle{
+				fill: yellow;
+      }
+		]]>
+  </style>
+</defs>
+```
+
+#### 外部样式表
+
+把样式保存到外部的css文件中,如果svg作为一个单独的文件引用外部样式表时,则需要在头部定义一个stylesheet
+
+```xml
+<?xml-stylesheet href="xxx.css" type="text/css" ?>
+```
+
+而如果svg作为html页面的一部分时,则按html的规则正常引入
+
+#### 表现属性
+
+把样式作为属性名使用,这种优先级最低
+
+```xml
+<circle cx="100" cy="200" r="50" fill="yellow" stroke="red" />
+```
+
+与作画一样,对路径最基本的两种处理就是描边和填充.
+
+#### 描边
+
+#####  stroke-width
+
+描边线条的宽度
+
+##### stroke
+
+描边线条的颜色
+
+##### stroke-opacity
+
+描边线条的透明度
+
+##### stroke-dasharray
+
+指定描边线条实线长度与空白间隔长度, 可以使用逗号或空格分隔
+
+##### stroke-linecap
+
+指定线条头尾形式,取值 butt | round | square
+
+##### stroke-linejoin
+
+指定两条线的连接处的样式 miter | round | bevel
+
+##### stroke-miterlimit
+
+![image-20201225143715958](/Users/jinjilin/项目/svg/image-20201225143715958.png)
+
+当storke-linejoin为miter时有效
+
+规定了斜接长度与线宽的比率
+
+斜接长度就是两个锐角尖之间的距离
+
+如果比率超过了stroke-miterlimit设置的值,stroke-linejoin就会变成bevel.
+
+#### 填充
+
+##### fill
+
+填充颜色
+
+##### fill-opacity
+
+填充透明度
+
+##### fill-rule
+
+填充规则 evenodd | nonzero
+
+规定了一个闭合的路径里哪些是属于内部区域可以被填充,哪些不是
+
+
+
+
+
+
+
