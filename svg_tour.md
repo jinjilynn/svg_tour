@@ -392,7 +392,7 @@ image标签相当于建立起了一个视口,这个视口是基于定义的x、y
 
 ##### stroke-miterlimit
 
-![image-20201225143715958](/Users/jinjilin/项目/svg/image-20201225143715958.png)
+![image-20201225143715958](https://github.com/jinjilynn/svg_tour/blob/master/image-20201225143715958.png)
 
 当storke-linejoin为miter时有效
 
