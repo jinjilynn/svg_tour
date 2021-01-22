@@ -630,11 +630,21 @@ writing-mode可以决定文本的书写方向默认为lr,如果需要从上往�
 
 文本变成纵向书写后如果想要每个字符仍然保持水平书写方向则可以设置glpy-orientation-vertical为0进行调整.
 
+#### textPath
 
+textPath是一个非常有用的指令,原来的文本只能直直的排列,而textPath可以让文本沿着任何path路径排列.
 
+```xml
+<text>
+  <textPath xlink:href="" startOffset="">
+    	xxxxxxxxxx
+  </textPath>
+</text>
+```
 
+xlink:href指定排列的路径, startOffset指定文本相对于路径开始位置的偏移,偏移量可以设置百分比或单位长度.
 
-
+如果文本需要在路径中居中显示,可以在text上设置textancher="middle"并且在textPath上设置startOffset为50%
 
 
 
