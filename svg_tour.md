@@ -570,6 +570,68 @@ svg阅读器会自动计算第一个控制点并使两条曲线平滑过渡
 
 **若对带宽有要求,以上所有坐标点中,数字和字母之间不需要空格,整数和负数之间也不需要空格**
 
+### 文本
+
+在计算机系统中文本的表达都涉及两个概念:字符集和字体.
+
+- 字符集决定了文本的编码方式
+- 字体决定了字符的视觉展现效果
+
+在svg中文本使用Unicode字符集.并且要写在text标签命令中
+
+#### text
+
+```xml
+<text x="x-value" y="y-value">xxxx</text>
+```
+
+text标签最基本的属性名是x和y,表示text标签中第一个字符的基线起点位置,文本的默认填充是黑色的,如果需要设置其他样式可使用style属性,其中的属性和css标准中是一样的:
+
+- font-family
+- font-size
+- font-weight
+- font-style
+- text-decoration
+- word-spacing
+- letter-spacing
+
+#### 对齐
+
+text标签有两个属性可以设置水平或垂直的对齐方式:
+
+- text-anchor
+  - start | middle | end
+- dominant-baseline
+  - text-bottom | middle | text-top
+
+#### tspan
+
+以上的设置都是对text标签内的文本做统一的样式处理,如果需要对不同的文本应用不同的样式,除了可以把它们分别放在不同的text标签里外,还可以在text标签中使用tspan.
+
+```xml
+<tspan style="" dx="" dy="" x="" y="" rotate="">xxxxx</tspan>
+```
+
+可以为tspan单独指定style样式,或设置相对于元素本身的偏移dx、dy,或设置字符的旋转rotate,也可以设置片段的绝对位置型x、y,绝对位置可用于为文本进行换行.
+
+其中dx、dy、x、y、rotate的值可以不是单独的一个值,也可以是用空格分隔的一组值,分别对应tspan内各个字符的偏移量.
+
+**偏移对tspan标签结束后仍然会起作用**
+
+dy在设置偏移量的时候可能需要一写计算会比较繁琐,这时可以使用baseline-shift属性快捷设置上标或下标:super | sub, 但这种属性只会在tspan内起作用,不会延续到tspan结束后.
+
+#### 文本长度
+
+textLength属性可以显示设置文本长度,同时配合lengthAdjust属性来调整字符大小或字符间距大小.但不推荐这么做,因为无论如何都是影响文字的外观美感.
+
+#### writing-mode
+
+writing-mode可以决定文本的书写方向默认为lr,如果需要从上往下书写则可以设置为tb.在svg中书写总想文本有两种方法,一种就是设置writing-mode,另一种是旋转坐标系90度.
+
+文本变成纵向书写后如果想要每个字符仍然保持水平书写方向则可以设置glpy-orientation-vertical为0进行调整.
+
+
+
 
 
 
